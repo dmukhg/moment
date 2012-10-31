@@ -1,18 +1,20 @@
 #include <stdio.h>
 
+#include "defs.cuh"
+#include "utils.cuh"
+#include "connections.cuh"
 #include "main.cuh"
 
-/* Step forward in time. */
+/* Increment the time-step by 1.  
+
+ * Note: Use only with a single block * and a single thread */
 __global__ void time_step(int *dev_time)
 {
-  *dev_time += 1; 
+    *dev_time += 1;
 }
 
-__global__ void change_conn(Connection *dev_connections) 
-{
-  dev_connections[dev_get_index(1,12)].neuron = 14141;
-}
 
+/* The main moment loop */
 int main( void ) 
 {
     int *dev_time;
@@ -35,7 +37,6 @@ int main( void )
         sizeof(Connection) * NUMNEURON * PSYNCONN,
         cudaMemcpyHostToDevice);
 
-    // XXX The limit shouldn't be iterations. Discuss!
     while (host_time < ITERATIONS) {
         // Step forward in time.  Since this is a part of the global
         // memory, you only need to do it via one thread.
@@ -46,13 +47,9 @@ int main( void )
             cudaMemcpyDeviceToHost); 
     }
 
-    change_conn<<<1,1>>>(dev_connections);
-
     cudaMemcpy(&host_connections, dev_connections,
         sizeof(Connection) * NUMNEURON * PSYNCONN,
         cudaMemcpyDeviceToHost);
-
-    printf("%d\n", host_connections[get_index(1,12)].neuron);
 
     // Free memory on GPU
     cudaFree(dev_time);
