@@ -1,8 +1,9 @@
 NVCC= nvcc
 BUILD_DIR=build
+OBJ= main.o utils.o connections.o
 
-moment: main.o connections.o utils.o src/defs.cuh
-	$(NVCC) -o $(BUILD_DIR)/moment main.o utils.o
+build/moment: main.o connections.o utils.o src/defs.cuh
+	$(NVCC) -o $@ main.o utils.o connections.o 
 	rm main.o connections.o utils.o
 
 main.o: src/main.cuh src/main.cu src/connections.cuh \
