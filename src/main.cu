@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "defs.cuh"
 #include "utils.cuh"
@@ -6,7 +8,7 @@
 #include "main.cuh"
 
 /* Increment the time-step by 1.  
-
+ *
  * Note: Use only with a single block * and a single thread */
 __global__ void time_step(int *dev_time)
 {
@@ -23,10 +25,23 @@ int main( void )
     Connection host_connections[NUMNEURON * PSYNCONN]; 
     Connection *dev_connections;
 
+    Neuron host_neurons[NUMNEURON + OUTNEURON];
+    Neuron *dev_neurons;
+
     // Allocate memory on the GPU
     cudaMalloc( (void**)&dev_time, sizeof(int) );
     cudaMalloc( (void**)&dev_connections,
         sizeof(Connection) * NUMNEURON * PSYNCONN);
+    cudaMalloc( (void**)&dev_neurons,
+        sizeof(Neuron) * (NUMNEURON + OUTNEURON) );
+
+    // Initialization
+    srand( time(NULL) ); // Random seed
+    input_random_current(host_neurons);
+
+    for (int i=0; i<INNEURON; i++) {
+      printf("%d\n", host_neurons[i].current);
+    }
 
     // Copy the time to the GPU
     cudaMemcpy(dev_time, &host_time, sizeof(int),
