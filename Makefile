@@ -1,5 +1,6 @@
 NVCC= nvcc
 BUILD_DIR=build
+TFLAGS= -Isrc
 
 # Application targets
 build/moment: main.o neuron.o iteration.o
@@ -19,7 +20,11 @@ iteration.o: src/iteration.cu src/iteration.cuh \
 	$(NVCC) -c -o $@ $<
 
 # Testing targets
-test: test-neuron
+test: build/test-neuron
+	./build/test-neuron
+
+build/test-neuron: test/neuron-test.cu src/neuron.cu* src/iteration.cu*
+	$(NVCC) $(TFLAGS) -o $@ $< 
 
 .PHONY: clean 
 
