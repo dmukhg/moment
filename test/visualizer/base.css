@@ -3,10 +3,16 @@ body {
   font-family: Georgia, serif;
 }
 
+h1 {
+  font-weight: normal;
+}
+
 textarea.coord {
   font-family: monospace;
   font-size: 0.8em;
   width: 100%;
+  border: 1px solid #88a;
+  height: 300px;
 }
 
 div.column {
@@ -16,4 +22,23 @@ div.column {
 
 div.placeholder {
   border: 1px solid #88a;
+}
+
+input[type=reset] {
+  display: inline-block;
+  width: 10em; 
+  height: 4em;
+}
+
+button {
+  display: inline-block;
+  width: 10em; 
+  height: 4em;
+}
+
+div.form-actions {
+  margin: auto;
+  text-align: center;
+  width: 300px;
+  margin-top: 0.5em;
 }

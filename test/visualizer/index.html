@@ -10,18 +10,22 @@
   <body>
     <h1>Spiking Visualizer</h1>
     <div class="column input" style="width: 300px;">
-      <textarea class="coord">[    ]</textarea>
-      <button id="draw-btn">
-        Draw!
-      </button>
+      <form>
+        <textarea class="coord">[    ]</textarea>
+        <div class="form-actions">
+          <input type="reset"></input>
+          <button id="draw-btn">Draw!</button>
+        </div>
+      </form>
     </div>
-    <div class="placeholder column" style="width:600px;height:300px;">
+    <div class="placeholder column" style="width:900px;height:300px;">
       &nbsp;
     </div>
 
     <script type="text/javascript">
       function init() {
-        $('button#draw-btn').click(function () {
+        $('button#draw-btn').click(function (e) {
+            e.preventDefault();
             var d1 = eval( $('textarea.coord').first().val() );
 
             $.plot( $('div.placeholder'), [d1]);
