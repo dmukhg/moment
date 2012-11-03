@@ -1,2 +1,6 @@
 # Ignore built files
 build/
+*.o
+
+# Ignore generated files
+a.js
