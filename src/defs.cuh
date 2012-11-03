@@ -53,4 +53,11 @@
 // condition.
 #define ITERATIONS 100000
 
+// Now, we have the Izhikewich model factors
+#define IzA 0.02
+#define IzB 0.2
+#define IzC -65.0
+#define IzD 2.0
+#define IzTHRESHOLD 30.0
+
 #endif

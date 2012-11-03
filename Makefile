@@ -1,18 +1,29 @@
 NVCC= nvcc
 BUILD_DIR=build
-OBJ= main.o utils.o connections.o
 
-build/moment: main.o connections.o utils.o src/defs.cuh
-	$(NVCC) -o $@ main.o utils.o connections.o 
-	rm main.o connections.o utils.o
+# Application targets
+build/moment: main.o neuron.o iteration.o
+	$(NVCC) -o $@ $^
+	rm $^
 
-main.o: src/main.cuh src/main.cu src/connections.cuh \
-				src/utils.cuh src/defs.cuh
-	$(NVCC) -c -o main.o src/main.cu
+main.o: src/main.cu src/main.cuh src/neuron.cuh \
+				src/iteration.cuh src/defs.cuh
+	$(NVCC) -c -o $@ $<
 
-connections.o: src/connections.cuh src/connections.cu \
+neuron.o: src/neuron.cu src/neuron.cuh \
 				src/defs.cuh
-	$(NVCC) -c -o connections.o src/connections.cu
+	$(NVCC) -c -o $@ $<
 
-utils.o: src/utils.cuh src/utils.cu src/defs.cuh
-	$(NVCC) -c -o utils.o src/utils.cu
+iteration.o: src/iteration.cu src/iteration.cuh \
+				src/defs.cuh
+	$(NVCC) -c -o $@ $<
+
+# Testing targets
+test: test-neuron
+
+.PHONY: clean 
+
+clean:
+	rm build/*
+	rm *.o
+
