@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Spiking visualizer</title>
+    <link rel="stylesheet" href="base.css"/>
+    <script type="text/javascript" src="https://raw.github.com/flot/flot/master/jquery.js"></script>
+    <script type="text/javascript" src="https://raw.github.com/flot/flot/master/jquery.flot.js"></script>
+
+  </head>
+  <body>
+    <h1>Spiking Visualizer</h1>
+    <div class="column input" style="width: 300px;">
+      <textarea class="coord">[    ]</textarea>
+      <button id="draw-btn">
+        Draw!
+      </button>
+    </div>
+    <div class="placeholder column" style="width:600px;height:300px;">
+      &nbsp;
+    </div>
+
+    <script type="text/javascript">
+      function init() {
+        $('button#draw-btn').click(function () {
+            var d1 = eval( $('textarea.coord').first().val() );
+
+            $.plot( $('div.placeholder'), [d1]);
+        });
+      };
+
+      $(window).load(init);
+    </script>
+  </body>
+</html>
+
+

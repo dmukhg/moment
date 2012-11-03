@@ -1,0 +1,19 @@
+body {
+  margin: 1em;
+  font-family: Georgia, serif;
+}
+
+textarea.coord {
+  font-family: monospace;
+  font-size: 0.8em;
+  width: 100%;
+}
+
+div.column {
+  display: inline-block;
+  vertical-align: top;
+}
+
+div.placeholder {
+  border: 1px solid #88a;
+}
