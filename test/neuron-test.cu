@@ -9,7 +9,9 @@
 #include "neuron.cu"
 #include "iteration.cu"
 
-/* Study the spike pattern in a single neuron with a stepped input. */
+/* Study the spike pattern in a single neuron with a stepped input. 
+ * The output of this program is meant to be viewed with the included spiking
+ * visualizer in test/visualizer/. */
 int test_single_neuron(void)
 {
   int *dev_time;
@@ -35,7 +37,7 @@ int test_single_neuron(void)
 
     if (host_time == 500) {
       // At t=100, give thalamic input of 4 to the neuron
-      host_neurons[0].current = 40.0f;
+      host_neurons[0].current = 13.0f;
       cudaMemcpy(dev_neurons, host_neurons, sizeof(Neuron),
           cudaMemcpyHostToDevice);
     }
