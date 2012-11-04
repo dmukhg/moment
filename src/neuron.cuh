@@ -22,7 +22,7 @@ struct Neuron {
       , potential // 'v' Membrane potential
       , recovery; // 'u' Negative feedback 
 
-  Neuron() : current(0.0), potential(IzC), recovery() {}
+  Neuron() : current(0.0), potential(0.0), recovery(0.0) {}
 };
 
 // Initialization functions
