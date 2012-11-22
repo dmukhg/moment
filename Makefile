@@ -23,7 +23,7 @@ iteration.o: src/iteration.cu src/iteration.cuh \
 test: build/test-neuron
 	./build/test-neuron
 
-build/test-neuron: test/neuron-test.cu src/neuron.cu* src/iteration.cu*
+build/test-neuron: test/neuron-test.cu src/neuron.cu* src/iteration.cu* src/defs.cuh
 	$(NVCC) $(TFLAGS) -o $@ $< 
 
 .PHONY: clean 
