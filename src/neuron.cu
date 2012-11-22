@@ -37,7 +37,9 @@ __global__ void update_potential(Neuron *neurons, int number)
     del_v = 0.04f*v*v + 5.0f*v + 140.0f - u + I;
     del_u = IzA * ( IzB*v - u);
 
-    neurons[offset].potential = v + del_v;
-    neurons[offset].recovery  = u + del_u;
+    // Multiply by IzINCREMENT in this case is equivalent to
+    // multipying with dx in a Taylor series expansion
+    neurons[offset].potential = v + del_v * IzINCREMENT;
+    neurons[offset].recovery  = u + del_u * IzINCREMENT;
   }
 }

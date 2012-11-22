@@ -60,4 +60,7 @@
 #define IzD 2.0
 #define IzTHRESHOLD 30.0
 
+// The time increment for each interation
+#define IzINCREMENT 1
+
 #endif
