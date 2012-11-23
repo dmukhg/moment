@@ -1,6 +1,6 @@
-#ifndef MOMENT_DEFS
+#ifndef MOMENT_DEFS_CUH
 
-#define MOMENT_DEFS
+#define MOMENT_DEFS_CUH
 
 /* A note about definitions as used in this program.
   

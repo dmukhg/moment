@@ -1,6 +1,6 @@
-#ifndef MOMENT_CONNECTIONS
+#ifndef MOMENT_NEURON_CUH
 
-#define MOMENT_CONNECTIONS
+#define MOMENT_NEURON_CUH
 
 #include <stdlib.h> // For rand()
 

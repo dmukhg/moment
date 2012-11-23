@@ -1,5 +1,5 @@
-#ifndef MOMENT_ITERATION
-#define MOMENT_ITERATION
+#ifndef MOMENT_ITERATION_CUH
+#define MOMENT_ITERATION_CUH
 
 #include "defs.cuh"
 
