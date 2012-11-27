@@ -49,7 +49,7 @@ int test_single_neuron(void)
           cudaMemcpyHostToDevice);
     }
 
-    update_potential<<<1,1>>>(dev_neurons, 1);
+    update_potential<<<1,1>>>(dev_neurons, NULL, 1);
 
     cudaMemcpy(host_neurons, dev_neurons, sizeof(Neuron),
         cudaMemcpyDeviceToHost);
