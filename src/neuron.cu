@@ -14,12 +14,16 @@ void input_random_current(Neuron *neurons)
 }
 
 /* Go through each neuron and update the membrane potential based on
- * the Izhikewich model. This is for a single iteration. */
-__global__ void update_potential(Neuron *neurons, int number)
+ * the Izhikewich model. 
+
+ * This is for a single iteration. */
+__global__ void update_potential(Neuron *neurons, 
+    Connection *connections, int number)
 {
   float del_v, del_u, v, u, I;
               
   int offset = blockIdx.x * blockDim.x * blockDim.y + threadIdx.x;
+  int cIdx;
 
   if (offset >= number) { 
     // There are no such neurons
@@ -33,6 +37,16 @@ __global__ void update_potential(Neuron *neurons, int number)
   if (v > IzTHRESHOLD) {
     neurons[offset].potential = IzC;
     neurons[offset].recovery = u + IzD;
+
+    // Update the thalamic input on the next neuron.
+    cIdx = neurons[offset].connection; 
+    if (connections != NULL) {
+      do {
+        neurons[connections[cIdx].neuron].potential += \
+                         v * connections[cIdx].weight;
+        cIdx = connections[cIdx].next;
+      } while (cIdx != 0);
+    }
   } else {
     del_v = 0.04f*v*v + 5.0f*v + 140.0f - u + I;
     del_u = IzA * ( IzB*v - u);
