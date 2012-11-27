@@ -36,14 +36,14 @@ int test_single_neuron(void)
     time_step<<<1,1>>>(dev_time);
 
     if (host_time == 500) {
-      // At t=100, give thalamic input of 4 to the neuron
+      // At t=400, give thalamic input of 4 to the neuron
       host_neurons[0].current = 13.0f;
       cudaMemcpy(dev_neurons, host_neurons, sizeof(Neuron),
           cudaMemcpyHostToDevice);
     }
 
     if (host_time == 800) {
-      // At t=100, give thalamic input of 4 to the neuron
+      // At t=800, remove all thalamic input
       host_neurons[0].current = 0.0f;
       cudaMemcpy(dev_neurons, host_neurons, sizeof(Neuron),
           cudaMemcpyHostToDevice);
