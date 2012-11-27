@@ -30,6 +30,11 @@
 
             $.plot( $('div.placeholder'), [d1]);
         });
+
+        $('input[type="reset"]').click(function () {
+            $('div.placeholder').empty();
+        });
+
       };
 
       $(window).load(init);
