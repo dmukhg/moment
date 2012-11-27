@@ -20,15 +20,20 @@ iteration.o: src/iteration.cu src/iteration.cuh \
 	$(NVCC) -c -o $@ $<
 
 # Testing targets
-test: build/test-neuron
+test: build/test-neuron build/test-network
 	./build/test-neuron
+	./build/test-network
 
-build/test-neuron: test/neuron-test.cu src/neuron.cu* src/iteration.cu* src/defs.cuh
+build/test-neuron: test/neuron-test.cu src/neuron.cu* \
+									src/iteration.cu* src/defs.cuh
 	$(NVCC) $(TFLAGS) -o $@ $< 
+
+build/test-network: test/network-test.cu src/neuron.cu* \
+									src/iteration.cu* src/defs.cuh
+	$(NVCC) $(TFLAGS) -o $@ $<
 
 .PHONY: clean 
 
 clean:
 	rm build/*
 	rm *.o
-
