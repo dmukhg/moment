@@ -21,15 +21,15 @@ iteration.o: src/iteration.cu src/iteration.cuh \
 	$(NVCC) $(NFLAGS) -c -o $@ $<
 
 # Testing targets
-test: build/test-neuron build/test-network
+test: build/test-neuron build/test-2neurons
 	./build/test-neuron
-	./build/test-network
+	./build/test-2neurons
 
 build/test-neuron: test/neuron-test.cu src/neuron.cu* \
 									src/iteration.cu* src/defs.cuh
 	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $< 
 
-build/test-network: test/network-test.cu src/neuron.cu* \
+build/test-2neurons: test/2neurons-test.cu src/neuron.cu* \
 									src/iteration.cu* src/defs.cuh
 	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
 
