@@ -16,6 +16,7 @@ int test_single_neuron(void)
 {
   int *dev_time;
   int host_time = 0;
+  bool *dev_fired, host_fired[1];
 
   Neuron host_neurons[1];
   Neuron *dev_neurons;
@@ -26,6 +27,7 @@ int test_single_neuron(void)
 
   // Initialization
   host_neurons[0].current = 0;
+  fill_false(host_fired, 1);
   cudaMemcpy(dev_time, &host_time, sizeof(int),
       cudaMemcpyHostToDevice);
   cudaMemcpy(dev_neurons, &host_neurons, sizeof(Neuron),
@@ -34,21 +36,25 @@ int test_single_neuron(void)
 
   while (host_time < 1000) {
     time_step<<<1,1>>>(dev_time);
+    cudaMalloc( (void**)&dev_fired, sizeof(bool));
+    cudaMemcpy(dev_fired, &host_fired, sizeof(bool), cudaMemcpyHostToDevice);;
 
     if (host_time == 500) {
       // At t=400, give thalamic input of 4 to the neuron
-      host_neurons[0].current = 13.0f;
+      host_neurons[0].input = 13;
       cudaMemcpy(dev_neurons, host_neurons, sizeof(Neuron),
           cudaMemcpyHostToDevice);
     }
 
     if (host_time == 800) {
       // At t=800, remove all thalamic input
-      host_neurons[0].current = 0.0f;
+      host_neurons[0].input = 0.0f;
       cudaMemcpy(dev_neurons, host_neurons, sizeof(Neuron),
           cudaMemcpyHostToDevice);
     }
 
+    find_firing_neurons<<<1,1>>>(dev_neurons, dev_fired, 1);
+    update_current<<<1,1>>>(dev_neurons, NULL, dev_fired, 1);
     update_potential<<<1,1>>>(dev_neurons, NULL, 1);
 
     cudaMemcpy(host_neurons, dev_neurons, sizeof(Neuron),
