@@ -1,18 +1,13 @@
 body {
-  margin: 1em;
-  font-family: Georgia, serif;
+  margin: 0;
+  font-family: arial, sans-serif;
+  background-color: #fff;
+  color: #223;
 }
 
-h1 {
-  font-weight: normal;
-}
-
-textarea.coord {
-  font-family: monospace;
-  font-size: 0.8em;
-  width: 100%;
-  border: 1px solid #88a;
-  height: 300px;
+.page {
+  display: block;
+  margin-left: 40px;
 }
 
 div.column {
@@ -20,25 +15,58 @@ div.column {
   vertical-align: top;
 }
 
-div.placeholder {
-  border: 1px solid #88a;
+div.title {
+  display: block;
+  width: 100%;
+  background-color: #f0f0f0;
+
+  font-family: Georgia;
+
+  margin: 0;
+  padding: 1em 0 0.5em 0;
 }
 
-input[type=reset] {
+div.title h1 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+div.separator {
+  font-size: 0pt;
+  display: block;
+  width: 90%;
+
+  height: 6px;
+}
+
+span.separator {
+  font-size: 0pt;
   display: inline-block;
-  width: 10em; 
-  height: 4em;
+  width: 6px;
 }
 
-button {
-  display: inline-block;
-  width: 10em; 
-  height: 4em;
-}
-
-div.form-actions {
-  margin: auto;
-  text-align: center;
+div.input {
   width: 300px;
-  margin-top: 0.5em;
+  height: 300px;
+}
+
+textarea.coord {
+  width: 300px;
+  height: 300px;
+
+  border-width: 0;
+  border-radius: 0;
+
+  font-size: 9pt;
+  font-family: monospace;
+}
+
+input[type=reset], button#draw-btn {
+  width: 140px;
+
+  font-size: 12pt;
+  height: 4em;
+
+  color: #444;
 }

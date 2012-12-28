@@ -8,30 +8,38 @@
 
   </head>
   <body>
-    <h1>Spiking Visualizer</h1>
-    <div class="column input" style="width: 300px;">
-      <form>
-        <textarea class="coord">[    ]</textarea>
-        <div class="form-actions">
-          <input type="reset"></input>
-          <button id="draw-btn">Draw!</button>
+    <div class="title">
+      <h1 class="page">Spiking Visualizer</h1>
+    </div>
+    <div class="separator">&nbsp;</div>
+    <div class="page">
+      <div class="column input">
+        <form>
+          <textarea class="coord">[    ]</textarea>
+          <div class="form-actions">
+            <input type="reset"></input>
+            <button id="draw-btn">Draw!</button>
+          </div>
+        </form>
         </div>
-      </form>
+        <span class="separator">&nbsp;</span>
+        <div class="placeholder column" style="width:850px;height:300px;">
+        &nbsp;
+      </div>
     </div>
-    <div class="placeholder column" style="width:900px;height:300px;">
-      &nbsp;
-    </div>
-
-    <script type="text/javascript">
+        <script type="text/javascript">
       function init() {
         $('button#draw-btn').click(function (e) {
             e.preventDefault();
             var d1 = eval( $('textarea.coord').first().val() );
 
-            $.plot( $('div.placeholder'), [d1]);
+            $.plot( $('div.placeholder'), [{
+              data: d1,
+              color: 'rgb(23, 43, 145)',
+            }]);
         });
 
-        $('input[type="reset"]').click(function () {
+        $('input[type="reset"]').click(function (e) {
             $('div.placeholder').empty();
         });
 
