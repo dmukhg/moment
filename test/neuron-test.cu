@@ -37,7 +37,7 @@ int test_single_neuron(void)
   while (host_time < 1000) {
     time_step<<<1,1>>>(dev_time);
     cudaMalloc( (void**)&dev_fired, sizeof(bool));
-    cudaMemcpy(dev_fired, &host_fired, sizeof(bool), cudaMemcpyHostToDevice);;
+    cudaMemcpy(dev_fired, &host_fired, sizeof(bool), cudaMemcpyHostToDevice);
 
     if (host_time == 500) {
       // At t=400, give thalamic input of 4 to the neuron
