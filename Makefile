@@ -33,6 +33,9 @@ build/test-2neurons: test/2neurons-test.cu src/neuron.cu* \
 									src/iteration.cu* src/defs.cuh
 	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
 
+build/test-vibration-single-neuron: test/vibration-single-neuron.cu src/neuron.cu* \
+									src/iteration.cu* src/defs.cuh
+	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
 
 build/format: test/format.cu
 	$(NVCC) -o $@ $<
