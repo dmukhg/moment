@@ -62,11 +62,11 @@ textarea.coord {
   font-family: monospace;
 }
 
-input[type=reset], button#draw-btn {
-  width: 140px;
+input[type=reset], button.draw-btn {
+  width: 80px;
 
   font-size: 12pt;
-  height: 4em;
+  height: 3em;
 
   color: #444;
 }

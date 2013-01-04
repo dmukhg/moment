@@ -17,30 +17,50 @@
         <form>
           <textarea class="coord">[    ]</textarea>
           <div class="form-actions">
-            <input type="reset"></input>
-            <button id="draw-btn">Draw!</button>
+            Upper plot: 
+            <input type="reset" id="reset1"></input>
+            <button class="draw-btn" id="draw-btn1">Draw!</button>
+            <div class="separator">&nbsp;</div>
+            Lower plot:
+            <input type="reset" id="reset2"></input>
+            <button class="draw-btn" id="draw-btn2">Draw!</button>
           </div>
         </form>
-        </div>
-        <span class="separator">&nbsp;</span>
-        <div class="placeholder column" style="width:850px;height:300px;">
-        &nbsp;
+      </div>
+      <span class="separator">&nbsp;</span>
+      <div class="column" style="width:850px;">
+        <div id="placeholder1" style="width:850px;height:300px;">&nbsp;</div>
+        <div id="placeholder2" style="width:850px;height:300px;">&nbsp;</div>
       </div>
     </div>
         <script type="text/javascript">
       function init() {
-        $('button#draw-btn').click(function (e) {
+        $('button#draw-btn1').click(function (e) {
             e.preventDefault();
             var d1 = eval( $('textarea.coord').first().val() );
 
-            $.plot( $('div.placeholder'), [{
+            $.plot( $('div#placeholder1'), [{
               data: d1,
               color: 'rgb(23, 43, 145)',
             }]);
         });
 
-        $('input[type="reset"]').click(function (e) {
-            $('div.placeholder').empty();
+        $('button#draw-btn2').click(function (e) {
+            e.preventDefault();
+            var d1 = eval( $('textarea.coord').first().val() );
+
+            $.plot( $('div#placeholder2'), [{
+              data: d1,
+              color: 'rgb(23, 43, 145)',
+            }]);
+        });
+
+        $('input#reset1').click(function (e) {
+            $('div#placeholder1').empty();
+        });
+
+        $('input#reset2').click(function (e) {
+            $('div#placeholder2').empty();
         });
 
       };
