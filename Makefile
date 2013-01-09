@@ -21,10 +21,6 @@ iteration.o: src/iteration.cu src/iteration.cuh \
 	$(NVCC) $(NFLAGS) -c -o $@ $<
 
 # Testing targets
-test: build/test-neuron build/test-2neurons
-	./build/test-neuron
-	./build/test-2neurons
-
 build/test-neuron: test/neuron-test.cu src/neuron.cu* \
 									src/iteration.cu* src/defs.cuh
 	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $< 
@@ -38,6 +34,9 @@ build/test-vibration-single-neuron: test/vibration-single-neuron.cu src/neuron.c
 	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
 
 build/format: test/format.cu
+	$(NVCC) -o $@ $<
+
+build/frequency-generator: test/frequency-generator.cu
 	$(NVCC) -o $@ $<
 
 .PHONY: clean 
