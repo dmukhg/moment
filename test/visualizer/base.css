@@ -70,3 +70,25 @@ input[type=reset], button.draw-btn {
 
   color: #444;
 }
+
+button.add-btn {
+  display: block;
+  margin: 1em auto;
+
+  padding: 1em 4em;
+}
+
+div.placeholder {
+  border: 1px solid #dddddd;
+  margin-bottom: 2em;
+}
+
+div.pl-selected {
+  border-color: #0099ff;
+}
+
+div.pl-wrapper {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 600px;
+}
