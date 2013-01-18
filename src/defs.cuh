@@ -60,6 +60,12 @@
 #define IzD 2.0
 #define IzTHRESHOLD 30.0
 
+// The above values of Iz parameters give a baseline voltage of
+// -70.00. When we are resetting the neuron voltages, this is the
+// target potential.
+#define BASELINE_POTENTIAL -70.00000
+#define BASELINE_RECOVERY  -14.00000
+
 // The time increment for each interation
 #define IzINCREMENT 1
 

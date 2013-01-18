@@ -26,6 +26,17 @@ void input_random_current(Neuron *neurons)
   }
 }
 
+/* Host code. Resets all the membrane potentials and recoveries to the baseline
+ * values */
+void reset_neurons(Neuron *neurons, int number) {
+  int i;
+
+  for (i=0; i < number; i++) {
+    neurons[i].potential = BASELINE_POTENTIAL;
+    neurons[i].recovery  = BASELINE_RECOVERY;
+  }
+}
+
 /* Go through each neuron and update the membrane potential based on
  * the Izhikewich model. 
 
