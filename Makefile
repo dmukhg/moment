@@ -1,5 +1,10 @@
+LIBRARY_DIRS=-L /usr/lib64 -L /usr/local/cuda/lib64
+LIBRARIES=-l cudart -l stdc++
+INCLUDES=-I /usr/local/cuda/include -I /usr/local/cuda/cudart
+COMPILER=--compiler-bindir /usr/bin/gcc-4.4
+
 NVCC= nvcc
-NFLAGS= -arch=sm_12
+NFLAGS= -arch=sm_12 $(INCLUDES) $(COMPILER) -m 64 $(LIBRARY_DIRS) $(LIBRARIES)
 BUILD_DIR=build
 TFLAGS= -Isrc
 
