@@ -30,8 +30,6 @@ int test_two_neuron_network(void)
 
   // Initialization
   fill_false(host_fired, 2);
-  host_neurons[0].current = 0;
-  host_neurons[1].current = 0;
   host_neurons[0].connection = 0;
   host_connections[0].next = -1;
   host_connections[0].weight = 20.0;
@@ -52,7 +50,7 @@ int test_two_neuron_network(void)
 
     if (host_time == 500) {
       // At t=500, give thalamic input of 4 to the neuron
-      host_neurons[0].input = 9;
+      host_neurons[0].input = 4;
       cudaMemcpy(dev_neurons, host_neurons, sizeof(Neuron)*2,
           cudaMemcpyHostToDevice);
     }
