@@ -26,6 +26,10 @@ iteration.o: src/iteration.cu src/iteration.cuh \
 	$(NVCC) $(NFLAGS) -c -o $@ $<
 
 # Testing targets
+build/test-xor-benchmark: test/xor-benchmark.cu src/neuron.cu* \
+									src/iteration.cu* src/defs.cuh
+	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
+
 build/test-neuron: test/neuron-test.cu src/neuron.cu* \
 									src/iteration.cu* src/defs.cuh
 	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $< 
