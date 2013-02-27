@@ -12,6 +12,16 @@ void fill_false(bool *array, int num)
   return;
 }
 
+/* Takes an int array and fills it with zeros */
+void fill_zeros(int *array, int num)
+{
+  int i;
+
+  for (i=0; i < num; i++) {
+    array[i] = 0;
+  }
+}
+
 
 /* Establishes a random value of synaptic current on the input
  * neurons. */

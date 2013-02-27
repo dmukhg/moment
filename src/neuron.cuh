@@ -36,6 +36,7 @@ struct Neuron {
 // Initialization functions
 void input_random_current(Neuron *neurons);
 void fill_false(bool *array, int num);
+void fill_zeros(int *array, int num);
 
 // Per-iteration functions
 __global__ void update_potential(Neuron *neurons, 
