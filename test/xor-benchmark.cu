@@ -16,18 +16,26 @@ int xor_benchmark(void)
   Neuron host_neurons[NEU_COUNT];
   Neuron *dev_neurons;
 
+  int host_rate[NEU_COUNT];
+  int *dev_rate;
+
   Connection host_connections[CON_COUNT];
   Connection *dev_connections;
 
   bool *dev_fired, host_fired[NEU_COUNT];
+  bool host_fired_queue[NEU_COUNT * FIRED_RES], *dev_fired_queue;
 
   // Allocate memory on the GPU
   cudaMalloc( (void**)&dev_time, sizeof(int));
   cudaMalloc( (void**)&dev_neurons, sizeof(Neuron) * NEU_COUNT);
   cudaMalloc( (void**)&dev_connections, sizeof(Connection) * CON_COUNT);
+  cudaMalloc( (void**)&dev_rate, sizeof(int) * NEU_COUNT);
+  cudaMalloc( (void**)&dev_fired_queue, sizeof(bool) * FIRED_RES * NEU_COUNT);
 
   // Initialization
   fill_false(host_fired, NEU_COUNT);
+  fill_false(host_fired_queue, NEU_COUNT * FIRED_RES);
+  fill_zeros(host_rate, NEU_COUNT);
   
   // Create the network architecture 
   host_neurons[0].connection = 0; // From neuron 0
@@ -87,6 +95,10 @@ int xor_benchmark(void)
       cudaMemcpyHostToDevice);
   cudaMemcpy(dev_connections, &host_connections, sizeof(Connection) * CON_COUNT,
       cudaMemcpyHostToDevice);
+  cudaMemcpy(dev_fired_queue, &host_fired_queue, sizeof(bool) * NEU_COUNT * FIRED_RES,
+      cudaMemcpyHostToDevice);
+  cudaMemcpy(dev_rate, &host_rate, sizeof(int) * NEU_COUNT,
+      cudaMemcpyHostToDevice);
 
   while (host_time < 1000) {
     time_step<<<1,1>>>(dev_time);
@@ -101,16 +113,26 @@ int xor_benchmark(void)
           cudaMemcpyHostToDevice);
     }
 
-    find_firing_neurons<<<1,NEU_COUNT>>>(dev_neurons, dev_fired, NEU_COUNT);
+    if (host_time == 600) {
+      host_neurons[1].input = 0;
+      cudaMemcpy(dev_neurons, &host_neurons, sizeof(Neuron) * NEU_COUNT,
+          cudaMemcpyHostToDevice);
+    }
+
+    find_firing_neurons<<<1,NEU_COUNT>>>(dev_neurons, dev_time, dev_fired, dev_rate,
+        dev_fired_queue, NEU_COUNT);
     update_current<<<1,NEU_COUNT>>>(dev_neurons, dev_connections, dev_fired, 
         NEU_COUNT);
     update_potential<<<1,NEU_COUNT>>>(dev_neurons, dev_connections, NEU_COUNT);
 
     cudaMemcpy(host_neurons, dev_neurons, sizeof(Neuron) * NEU_COUNT,
         cudaMemcpyDeviceToHost);
+    cudaMemcpy(host_rate, dev_rate, sizeof(int) * NEU_COUNT,
+        cudaMemcpyDeviceToHost);
 
 
-    printf("[ %d, %10f],\n", host_time, host_neurons[7].potential);
+    printf("[ %d, %10d],\n", host_time, host_rate[1]);
+    //printf("[ %d, %10f],\n", host_time, host_neurons[1].potential);
 
     cudaFree(&dev_fired);
     host_time++;

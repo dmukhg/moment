@@ -5,6 +5,7 @@
 #include <limits.h>
 
 #define WEIGHT 20.0
+#define NEU_COUNT 1
 
 // Note that we are including the source file and not the header file only.
 // This allows us access to static variables and globals (gasp!). This is more
@@ -34,17 +35,32 @@ int test_vibration_in_single_neuron(void)
   Neuron host_neurons[1];
   Neuron *dev_neurons;
 
+  int host_rate[NEU_COUNT];
+  int *dev_rate;
+
+  bool host_fired_queue[NEU_COUNT * FIRED_RES], *dev_fired_queue;
+
   // Allocate memory on the GPU
   cudaMalloc( (void**)&dev_time, sizeof(int));
   cudaMalloc( (void**)&dev_neurons, sizeof(Neuron));
+  cudaMalloc( (void**)&dev_rate, sizeof(int) * NEU_COUNT);
+  cudaMalloc( (void**)&dev_fired_queue, sizeof(bool) * FIRED_RES * NEU_COUNT);
 
   // Initialization
   host_neurons[0].current = 0;
   fill_false(host_fired, 1);
+  fill_false(host_fired_queue, NEU_COUNT * FIRED_RES);
+  fill_zeros(host_rate, NEU_COUNT);
+
   cudaMemcpy(dev_time, &host_time, sizeof(int),
       cudaMemcpyHostToDevice);
   cudaMemcpy(dev_neurons, &host_neurons, sizeof(Neuron),
       cudaMemcpyHostToDevice);
+  cudaMemcpy(dev_fired_queue, &host_fired_queue, sizeof(bool) * NEU_COUNT * FIRED_RES,
+      cudaMemcpyHostToDevice);
+  cudaMemcpy(dev_rate, &host_rate, sizeof(int) * NEU_COUNT,
+      cudaMemcpyHostToDevice);
+
 
   while (fgets(line, LINE_MAX, stdin) != NULL) {
     time_step<<<1,1>>>(dev_time);
@@ -57,7 +73,8 @@ int test_vibration_in_single_neuron(void)
     cudaMemcpy(dev_neurons, &host_neurons, sizeof(Neuron),
         cudaMemcpyHostToDevice);
 
-    find_firing_neurons<<<1,1>>>(dev_neurons, dev_fired, 1);
+    find_firing_neurons<<<1,1>>>(dev_neurons, dev_time, dev_fired, dev_rate,
+        dev_fired_queue, 1);
     update_current<<<1,1>>>(dev_neurons, NULL, dev_fired, 1);
     update_potential<<<1,1>>>(dev_neurons, NULL, 1);
 

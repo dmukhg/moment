@@ -1,5 +1,6 @@
 #ifndef MOMENT_ITERATION_CUH
 #define MOMENT_ITERATION_CUH
+#define FIRED_RES 100
 
 #include "defs.cuh"
 
@@ -10,5 +11,6 @@ __global__ void find_firing_neurons(Neuron *neurons,
  //     int *fired, int *fIdx);
 __global__ void update_current(Neuron *neurons, Connection *connections,
     bool *fired, int number);
+
 
 #endif
