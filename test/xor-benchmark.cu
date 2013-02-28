@@ -113,15 +113,9 @@ int xor_benchmark(void)
           cudaMemcpyHostToDevice);
     }
 
-    if (host_time == 600) {
-      host_neurons[1].input = 0;
-      cudaMemcpy(dev_neurons, &host_neurons, sizeof(Neuron) * NEU_COUNT,
-          cudaMemcpyHostToDevice);
-    }
-
     find_firing_neurons<<<1,NEU_COUNT>>>(dev_neurons, dev_time, dev_fired, dev_rate,
         dev_fired_queue, NEU_COUNT);
-    update_current<<<1,NEU_COUNT>>>(dev_neurons, dev_connections, dev_fired, 
+    update_current<<<1,NEU_COUNT>>>(dev_neurons, dev_connections, dev_fired,
         NEU_COUNT);
     update_potential<<<1,NEU_COUNT>>>(dev_neurons, dev_connections, NEU_COUNT);
 
