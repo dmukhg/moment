@@ -56,4 +56,3 @@ build/frequency-generator: test/frequency-generator.cu
 
 clean:
 	rm build/*
-	rm *.o
