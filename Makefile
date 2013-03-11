@@ -4,7 +4,10 @@ INCLUDES=-I /usr/local/cuda/include -I /usr/local/cuda/cudart
 COMPILER=--compiler-bindir /usr/bin/gcc-4.4
 
 NVCC= nvcc
+GCC=gcc
+GCCFLAGS=-std=c99
 NFLAGS= -arch=sm_12 $(INCLUDES) $(COMPILER) -m 64 $(LIBRARY_DIRS) $(LIBRARIES)
+FFLAGS= -l cufft # For fourier modules
 BUILD_DIR=build
 TFLAGS= -Isrc
 
@@ -47,10 +50,13 @@ build/test-frequency-to-neuron: test/frequency-to-neuron.cu src/neuron.cu* \
 	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
 
 build/format: test/format.cu
-	$(NVCC) -o $@ $<
+	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
 
-build/frequency-generator: test/frequency-generator.cu
-	$(NVCC) -o $@ $<
+build/frequency-generator: test/frequency-generator.c
+	$(GCC) -lm $(GCCFLAGS) $(TFLAGS) -o $@ $<
+
+build/fourier-transform: test/fourier.cu
+	$(NVCC) $(NFLAGS) $(TFLAGS) $(FFLAGS) -o $@ $<
 
 .PHONY: clean 
 
