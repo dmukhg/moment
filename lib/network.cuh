@@ -14,32 +14,45 @@ class Network {
   private: 
     Neuron *dev_neurons, *host_neurons;
     Connection *dev_connections, *host_connections;
-    bool *dev_fired, host_fired;
-    int *host_rate, *dev_rate, *dev_time, host_time, n_neurons, n_connections;
+    bool *dev_fired, *host_fired, *dev_fired_table, *host_fired_table;
+    int *host_rate, *dev_rate, *dev_time, host_time, n_neurons, n_connections
+      , fired_res;
 
   public:
     Network (int num_neurons, int num_connections) {
       n_neurons = num_neurons;
       n_connections = num_connections;
 
+      fired_res = 100;
+
       host_time = 0;
-      host_neurons = (Neuron*)malloc(sizeof(Neuron) * num_neurons);
-      host_rate = (int*)malloc(sizeof(int) * num_neurons);
-      host_connections = new Connection[num_connections];
+      host_neurons = (Neuron*)malloc(sizeof(Neuron) * n_neurons);
+      host_rate = (int*)malloc(sizeof(int) * n_neurons);
+      host_connections = new Connection[n_connections];
+      host_fired = (bool*)malloc(sizeof(bool) * n_neurons);
+      host_fired_table = (bool*)malloc(sizeof(bool) * n_neurons * fired_res);
 
       // Initialize
       fill_zeros(host_rate, n_neurons);
+      fill_false(host_fired, n_neurons);
+      fill_false(host_fired_table, n_neurons * fired_res);
 
       // Allocate
       cudaMalloc( (void**)&dev_time, sizeof(int) );
       cudaMalloc( (void**)&dev_neurons, sizeof(Neuron) * n_neurons);
       cudaMalloc( (void**)&dev_connections, sizeof(Connection) * n_connections);
       cudaMalloc( (void**)&dev_rate, sizeof(int) * n_neurons);
+      cudaMalloc( (void**)&dev_fired, sizeof(bool) * n_neurons);
+      cudaMalloc( (void**)&dev_fired_table, sizeof(bool) * n_neurons * fired_res);
 
       // Copy
       cudaMemcpy(dev_time, &host_time, sizeof(int),
           cudaMemcpyHostToDevice);
       cudaMemcpy(dev_rate, host_rate, sizeof(int) * n_neurons,
+          cudaMemcpyHostToDevice);
+      cudaMemcpy(dev_fired, host_fired, sizeof(bool) * n_neurons,
+          cudaMemcpyHostToDevice);
+      cudaMemcpy(dev_fired_table, host_fired_table, sizeof(bool) * n_neurons * fired_res,
           cudaMemcpyHostToDevice);
     };
   
@@ -160,6 +173,9 @@ class Network {
     void time_step() {
       _time_step<<<1,1>>>(dev_time);
       host_time++;
+    };
+
+    void find_firing_neurons() {
     };
 };
 

@@ -11,13 +11,13 @@ FFLAGS= -l cufft # For fourier modules
 BUILD_DIR=build
 TFLAGS= -Ilib
 
-build/tests: build/test-network-library
+tests: test/build/network-library
 
-build/test-network-library: test/network-library.cu lib/network.cuh \
+test/build/network-library: test/network-library.cu lib/network.cuh \
 						lib/kernels.cuh lib/types.cuh lib/defs.cuh
 	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
 
-build/tools: build/frequency-generator build/fourier-transform \
+tools: build/frequency-generator build/fourier-transform \
 	build/format
 
 build/format: src/format.cu
@@ -29,23 +29,6 @@ build/frequency-generator: src/frequency-generator.c
 build/fourier-transform: src/fourier.cu
 	$(NVCC) $(NFLAGS) $(TFLAGS) $(FFLAGS) -o $@ $<
 
-# Application targets
-#build/moment: main.o neuron.o iteration.o
-#	$(NVCC) $(NFLAGS) -o $@ $^
-#	rm $^
-#
-#main.o: lib/main.cu lib/main.cuh lib/neuron.cuh \
-#				lib/iteration.cuh lib/defs.cuh
-#	$(NVCC) $(NFLAGS) -c -o $@ $<
-#
-#neuron.o: lib/neuron.cu lib/neuron.cuh \
-#				lib/defs.cuh
-#	$(NVCC) $(NFLAGS) -c -o $@ $<
-#
-#iteration.o: lib/iteration.cu lib/iteration.cuh \
-#				lib/defs.cuh
-#	$(NVCC) $(NFLAGS) -c -o $@ $<
-#
 ## Testing targets
 #build/test-xor-benchmark: test/xor-benchmark.cu lib/neuron.cu* \
 #									lib/iteration.cu* lib/defs.cuh
@@ -72,3 +55,4 @@ build/fourier-transform: src/fourier.cu
 
 clean:
 	rm build/*
+	rm tes/build/*

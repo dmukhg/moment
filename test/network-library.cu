@@ -17,6 +17,7 @@ void test_time_step(Network n) {
 void test_accessors(Network n) {
   Neuron * neurons = n.neurons();
   Connection * cons = n.connections();
+  int * rate = n.spiking_rate(true);
 
   // Set values
   neurons[0].potential = 11.0;
@@ -32,7 +33,10 @@ void test_accessors(Network n) {
   cons = n.connections();
   assert(cons[0].neuron == 12);
   printf(".");
-  
+
+  assert(rate[0] == 0);
+  printf(".");
+
   return;
 }
 
