@@ -11,8 +11,23 @@ FFLAGS= -l cufft # For fourier modules
 BUILD_DIR=build
 TFLAGS= -Ilib
 
-build/test-network-library: test/network-library.cu
-	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $^
+build/tests: build/test-network-library
+
+build/test-network-library: test/network-library.cu lib/network.cuh \
+						lib/kernels.cuh lib/types.cuh lib/defs.cuh
+	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
+
+build/tools: build/frequency-generator build/fourier-transform \
+	build/format
+
+build/format: src/format.cu
+	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
+
+build/frequency-generator: src/frequency-generator.c
+	$(GCC) -lm $(GCCFLAGS) $(TFLAGS) -o $@ $<
+
+build/fourier-transform: src/fourier.cu
+	$(NVCC) $(NFLAGS) $(TFLAGS) $(FFLAGS) -o $@ $<
 
 # Application targets
 #build/moment: main.o neuron.o iteration.o
@@ -52,18 +67,7 @@ build/test-network-library: test/network-library.cu
 #									lib/iteration.cu* lib/defs.cuh
 #	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
 #
-#build/format: test/format.cu
-#	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
-#
-#build/frequency-generator: test/frequency-generator.c
-#	$(GCC) -lm $(GCCFLAGS) $(TFLAGS) -o $@ $<
-#
-#build/test-cluster: test/cluster.cu lib/network.cuh
-#	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
-#
-#build/fourier-transform: test/fourier.cu
-#	$(NVCC) $(NFLAGS) $(TFLAGS) $(FFLAGS) -o $@ $<
-#
+
 .PHONY: clean 
 
 clean:
