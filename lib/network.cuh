@@ -1,42 +1,13 @@
-/* Provides a struct to contain an SNN. */
+/* Provides a class to contain an SNN. */
 #ifndef MOMENT_NETWORK_CUH
 
-#define MOMENT_NEURON_CUH
+#define MOMENT_NETWORK_CUH
 
 #include <stdlib.h>
 
-/* Structure representing a connection. Has the id of the post
- * synaptic neuron, the synaptic weight and the index of the next
- * connection.
- */
-struct Connection {
-  int neuron;
-  float weight;
-  int next;
-};
-
-/* Structure representing a neuron in the Izhikewich model.
- *
- * current represents Thalamic Input.
- * connection represents the first connection that this neuron has.
- */
-struct Neuron {
-  float potential // 'v' Membrane potential
-      , recovery  // 'u' Negative feedback 
-      , input;    // In case this is an input neuron
-
-  int current; // 'I' Input current. Sum of all input potential
-
-
-  unsigned int connection;
-
-  Neuron() : current(0), potential(0.0), recovery(0.0), connection(0), input(0.0) {}
-};
-
-__global__ void _time_step(int *dev_time) {
-  /* Increment the time value in the device by 1 */
-  *dev_time += 1;
-};
+#include "types.cuh"
+#include "kernels.cuh"
+#include "utils.cuh"
 
 /* Class representing a network */
 class Network {
@@ -44,7 +15,7 @@ class Network {
     Neuron *dev_neurons, *host_neurons;
     Connection *dev_connections, *host_connections;
     bool *dev_fired, host_fired;
-    int *dev_time, host_time, n_neurons, n_connections;
+    int *host_rate, *dev_rate, *dev_time, host_time, n_neurons, n_connections;
 
   public:
     Network (int num_neurons, int num_connections) {
@@ -53,15 +24,22 @@ class Network {
 
       host_time = 0;
       host_neurons = (Neuron*)malloc(sizeof(Neuron) * num_neurons);
+      host_rate = (int*)malloc(sizeof(int) * num_neurons);
       host_connections = new Connection[num_connections];
+
+      // Initialize
+      fill_zeros(host_rate, n_neurons);
 
       // Allocate
       cudaMalloc( (void**)&dev_time, sizeof(int) );
-      cudaMalloc( (void**)&dev_neurons, sizeof(Neuron) * num_neurons);
-      cudaMalloc( (void**)&dev_connections, sizeof(Connection) * num_connections);
+      cudaMalloc( (void**)&dev_neurons, sizeof(Neuron) * n_neurons);
+      cudaMalloc( (void**)&dev_connections, sizeof(Connection) * n_connections);
+      cudaMalloc( (void**)&dev_rate, sizeof(int) * n_neurons);
 
       // Copy
       cudaMemcpy(dev_time, &host_time, sizeof(int),
+          cudaMemcpyHostToDevice);
+      cudaMemcpy(dev_rate, host_rate, sizeof(int) * n_neurons,
           cudaMemcpyHostToDevice);
     };
   
@@ -71,7 +49,7 @@ class Network {
       /* Returns the most recent value of host_time. This may or may not be in
        * sync with dev_time. */
       return time(false);
-    }
+    };
 
     int time(bool sync) {
       /* Returns host_time. If sync is true, copies dev_time into host_time and
@@ -82,7 +60,7 @@ class Network {
       }
 
       return host_time;
-    }
+    };
 
     void time(int t) {
       time(t, false);
@@ -158,9 +136,25 @@ class Network {
       host_connections = value;
 
       if (sync) {
-        cudaMemcpy(dev_connections, host_connections, sizeof(Connection) * n_connections,
-            cudaMemcpyHostToDevice);
+        cudaMemcpy(dev_connections, host_connections, 
+            sizeof(Connection) * n_connections, cudaMemcpyHostToDevice);
       }
+    };
+
+    // Accessor for Spiking Rate
+    int * spiking_rate() {
+      return spiking_rate(false);
+    };
+
+    int * spiking_rate(bool sync) {
+      /* Returns the spiking rate. If sync is true, copies from device and then
+       * returns */
+      if (sync) {
+        cudaMemcpy(host_rate, dev_rate, sizeof(int) * n_neurons,
+            cudaMemcpyDeviceToHost);
+      }
+
+      return host_rate;
     };
 
     void time_step() {
