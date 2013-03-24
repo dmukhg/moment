@@ -5,16 +5,21 @@
 #include <stdlib.h>
 #include <limits.h>
 
-int format(void)
+int format(bool integer_type)
 {
   char line[LINE_MAX];
-  int time = 0;
-  float value;
+  int time = 0, value_i;
+  float value_f;
 
   while (fgets(line, LINE_MAX, stdin) != NULL) {
-    value = strtof(line, NULL);
+    if (integer_type) {
+      value_i = strtol(line, NULL, 0);
+      printf("[%d, %10d],\n", time, value_i);
+    } else {
+      value_f = strtof(line, NULL);
+      printf("[%d, %10f],\n", time, value_f);
+    }
 
-    printf("[%d, %10f],\n", time, value);
 
     time++;
   }
@@ -22,9 +27,22 @@ int format(void)
   return 0;
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
-  format();
+  if (argc > 1 && argv[1][0] == 'h') {
+    printf("Usage: \n\n\
+    ./test/build/<some-test> | ./build/format [arg] > a.js\n\n\
+    * No argument, evaluate as floats.\n\
+    * Any argument other than 'help', evaluate as integers.\n\
+    * 'help', display this message\n\n");
+    return 0;
+  }
+
+  if (argc != 1) { // Some argument supplied
+    format(true);
+  } else {
+    format(false);
+  }
 
   return 0;
 }
