@@ -60,4 +60,4 @@ build/fourier-transform: src/fourier.cu
 
 clean:
 	rm build/*
-	rm tes/build/*
+	rm test/build/*
