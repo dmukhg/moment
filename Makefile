@@ -11,11 +11,16 @@ FFLAGS= -l cufft # For fourier modules
 BUILD_DIR=build
 TFLAGS= -Ilib
 
-tests: test/build/network-library
+tests: test/build/network-library test/build/kernels
 
 test/build/network-library: test/network-library.cu lib/network.cuh \
 						lib/kernels.cuh lib/types.cuh lib/defs.cuh
 	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
+
+test/build/kernels: test/kernels.cu lib/network.cuh \
+						lib/kernels.cuh lib/types.cuh lib/defs.cuh
+	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
+
 
 tools: build/frequency-generator build/fourier-transform \
 	build/format

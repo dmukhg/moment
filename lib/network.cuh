@@ -26,14 +26,13 @@ class Network {
       fired_res = 100;
 
       host_time = 0;
-      host_neurons = (Neuron*)malloc(sizeof(Neuron) * n_neurons);
-      host_rate = (int*)malloc(sizeof(int) * n_neurons);
+      host_neurons = new Neuron[n_neurons];
       host_connections = new Connection[n_connections];
-      host_fired = (bool*)malloc(sizeof(bool) * n_neurons);
-      host_fired_table = (bool*)malloc(sizeof(bool) * n_neurons * fired_res);
+      host_rate = new int[n_neurons]; 
+      host_fired = new bool[n_neurons];
+      host_fired_table = new bool[n_neurons * fired_res];
 
       // Initialize
-      fill_zeros(host_rate, n_neurons);
       fill_false(host_fired, n_neurons);
       fill_false(host_fired_table, n_neurons * fired_res);
 
@@ -46,6 +45,10 @@ class Network {
       cudaMalloc( (void**)&dev_fired_table, sizeof(bool) * n_neurons * fired_res);
 
       // Copy
+      cudaMemcpy(dev_neurons, host_neurons, sizeof(Neuron) * n_neurons,
+          cudaMemcpyHostToDevice);
+      cudaMemcpy(dev_connections, host_connections, sizeof(Connection) * n_connections,
+          cudaMemcpyHostToDevice);
       cudaMemcpy(dev_time, &host_time, sizeof(int),
           cudaMemcpyHostToDevice);
       cudaMemcpy(dev_rate, host_rate, sizeof(int) * n_neurons,
@@ -54,6 +57,15 @@ class Network {
           cudaMemcpyHostToDevice);
       cudaMemcpy(dev_fired_table, host_fired_table, sizeof(bool) * n_neurons * fired_res,
           cudaMemcpyHostToDevice);
+    };
+
+    ~Network () {
+      cudaFree(dev_neurons);
+      cudaFree(dev_time);
+      cudaFree(dev_connections);
+      cudaFree(dev_rate);
+      cudaFree(dev_fired);
+      cudaFree(dev_fired_table);
     };
   
 
@@ -176,6 +188,22 @@ class Network {
     };
 
     void find_firing_neurons() {
+      _find_firing_neurons<<<1,n_neurons>>>(dev_neurons, dev_time, dev_fired,
+          dev_rate, dev_fired_table, n_neurons, fired_res);
+    };
+
+    void update_current() {
+      _update_current<<<1,n_neurons>>>(dev_neurons, dev_connections, dev_fired,
+          n_neurons);
+    };
+
+    void update_potential() {
+      _update_potential<<<1,n_neurons>>>(dev_neurons, dev_connections,
+          n_neurons);
+
+      // Reset fired to false
+     cudaMemcpy(dev_fired, host_fired, sizeof(bool) * n_neurons,
+        cudaMemcpyHostToDevice);
     };
 };
 

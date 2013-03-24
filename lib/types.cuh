@@ -25,9 +25,9 @@ struct Neuron {
   int current; // 'I' Input current. Sum of all input potential
 
 
-  unsigned int connection;
+  signed int connection;
 
-  Neuron() : current(0), potential(0.0), recovery(0.0), connection(0), input(0.0) {}
+  Neuron() : current(0), potential(140.0), recovery(0.0), connection(-1), input(0) {}
 };
 
 #endif
