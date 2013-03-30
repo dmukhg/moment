@@ -21,6 +21,10 @@ test/build/kernels: test/kernels.cu lib/network.cuh \
 						lib/kernels.cuh lib/types.cuh lib/defs.cuh
 	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
 
+test/build/nutrient: test/nutrient.cu lib/network.cuh \
+						lib/kernels.cuh lib/types.cuh lib/defs.cuh
+	$(NVCC) $(NFLAGS) $(TFLAGS) -o $@ $<
+
 
 tools: build/frequency-generator build/fourier-transform \
 	build/format
