@@ -182,6 +182,8 @@ class Network {
       return host_rate;
     };
 
+
+    // Kernel callers
     void time_step() {
       _time_step<<<1,1>>>(dev_time);
       host_time++;
@@ -204,6 +206,65 @@ class Network {
       // Reset fired to false
      cudaMemcpy(dev_fired, host_fired, sizeof(bool) * n_neurons,
         cudaMemcpyHostToDevice);
+    };
+
+
+    // Build Connections
+    /* Build connections assuming complete connectivity. */
+    void build_connections(int num_input, int num_hidden, int num_output) {
+      if (num_input + num_hidden + num_output != n_neurons) {
+        // Ensure the parameters supplied are indeed adding up to the number of
+        // neurons
+        exit(1);
+      }
+
+      if (num_input*num_hidden + num_hidden*num_output != n_connections) {
+        // Ensure the number of connections add up
+        exit(1);
+      }
+
+      int i, j, num_i_and_h, num_c_so_far;
+
+      // Fill up the connections between the input layer and the hidden layer
+      for (i=0; i<num_input; i++) {
+        host_neurons[i].connection = num_hidden * i; 
+
+        for (j=0; j<num_hidden; j++) {
+          host_connections[i*num_hidden + j].neuron = num_input + j;
+          host_connections[i*num_hidden + j].weight = 20.0;
+
+          if (j == num_hidden - 1) {
+            host_connections[i*num_hidden + j].next = -1;
+          } else {
+            host_connections[i*num_hidden + j].next = num_hidden * i + j + 1;
+          }
+        }
+      }
+
+      // Fill up the connections between the hidden layer and the output layer
+      num_i_and_h = num_input + num_hidden;
+      num_c_so_far = num_input * num_hidden;
+
+      for (i=0; i<num_hidden; i++) {
+        host_neurons[num_input + i].connection = num_c_so_far + num_output * i;
+
+        for (j=0; j<num_output; j++) {
+          host_connections[num_c_so_far + i*num_output + j].neuron = num_i_and_h + j;
+          host_connections[num_c_so_far + i*num_output + j].weight = 20.0;
+
+          if (j == num_output - 1) {
+            host_connections[num_c_so_far + i*num_output + j].next = -1;
+          } else {
+            host_connections[num_c_so_far + i*num_output + j].next = num_hidden * i + j + 1;
+          }
+        }
+      }
+
+      // Copy to GPU
+      cudaMemcpy(dev_neurons, host_neurons,
+          sizeof(Neuron) * n_neurons, cudaMemcpyHostToDevice);
+      cudaMemcpy(dev_connections, host_connections, 
+          sizeof(Connection) * n_connections, cudaMemcpyHostToDevice);
     };
 };
 

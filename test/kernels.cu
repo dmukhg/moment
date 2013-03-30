@@ -29,16 +29,7 @@ int main() {
   Neuron *neu = n->neurons();
   Connection *c = n->connections();
 
-  neu[0].connection = 0;
-  c[0].next = -1;
-  c[0].weight = 20.0;
-  c[0].neuron = 1;
-
-  neu[1].connection = -1;
-
-  n->neurons(neu, true);
-  n->connections(c, true);
-
+  n->build_connections(1,1,0);
 
   test_kernel_find_firing(n);
 
