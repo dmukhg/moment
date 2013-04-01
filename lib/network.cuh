@@ -255,7 +255,7 @@ class Network {
           if (j == num_output - 1) {
             host_connections[num_c_so_far + i*num_output + j].next = -1;
           } else {
-            host_connections[num_c_so_far + i*num_output + j].next = num_hidden * i + j + 1;
+            host_connections[num_c_so_far + i*num_output + j].next = num_c_so_far | num_hidden * i + j + 1;
           }
         }
       }
