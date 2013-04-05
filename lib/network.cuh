@@ -4,6 +4,7 @@
 #define MOMENT_NETWORK_CUH
 
 #include <stdlib.h>
+#include <ctime>
 
 #include "types.cuh"
 #include "kernels.cuh"
@@ -209,6 +210,19 @@ class Network {
     };
 
 
+    /* Set random connection weights */
+    void randomize_weights() {
+      float low = 13.0, high = 20.0;
+      int i, seed;
+
+      seed = std::time(NULL);
+      srandom(seed);
+
+      for (i=0; i<n_connections; i++) {
+        host_connections[i].weight = (random() % (int(high) - int(low))) + low;
+      }
+    };
+
     // Build Connections
     /* Build connections assuming complete connectivity. */
     void build_connections(int num_input, int num_hidden, int num_output) {
@@ -231,7 +245,6 @@ class Network {
 
         for (j=0; j<num_hidden; j++) {
           host_connections[i*num_hidden + j].neuron = num_input + j;
-          host_connections[i*num_hidden + j].weight = 20.0;
 
           if (j == num_hidden - 1) {
             host_connections[i*num_hidden + j].next = -1;
@@ -250,7 +263,6 @@ class Network {
 
         for (j=0; j<num_output; j++) {
           host_connections[num_c_so_far + i*num_output + j].neuron = num_i_and_h + j;
-          host_connections[num_c_so_far + i*num_output + j].weight = 20.0;
 
           if (j == num_output - 1) {
             host_connections[num_c_so_far + i*num_output + j].next = -1;

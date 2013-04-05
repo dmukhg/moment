@@ -52,6 +52,7 @@ void test_nutrients(Network *n) {
 
 int main() {
   Network *n = new Network(13, 42);
+  n->randomize_weights();
   n->build_connections(5,6,2);
 
   test_nutrients(n);
