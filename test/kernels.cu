@@ -24,12 +24,12 @@ void test_kernel_find_firing(Network *n) {
 }
 
 int main() {
-  Network *n = new Network(2, 1);
+  Network *n = new Network(3, 2);
 
   Neuron *neu = n->neurons();
   Connection *c = n->connections();
 
-  n->build_connections(1,1,0);
+  n->build_connections(1,1,1);
 
   test_kernel_find_firing(n);
 
