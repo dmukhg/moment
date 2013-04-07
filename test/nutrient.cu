@@ -16,7 +16,7 @@ void test_nutrients(Network *n) {
 
   for (i=0; i<N_NUT; i++) {
     fgets(line, LINE_MAX, stdin);
-    sscanf(line, "23C%d%d%d%d%f", &name[i], &energy[i], &protein[i],
+    sscanf(line, "%23c%d%d%d%d%f", &name[i], &energy[i], &protein[i],
         &fat[i], &calcium[i], &iron[i]);
   }
 
@@ -50,7 +50,7 @@ void test_nutrients(Network *n) {
 
     rate = n->spiking_rate(true);
     neu = n->neurons(true);
-    //printf("%d, %d\n", rate[11], rate[12]);
+    printf("%d, %d\n", rate[11], rate[12]);
 
     // Compute averages or rather prepare for computing them
     average_1 += rate[11];
