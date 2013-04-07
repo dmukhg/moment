@@ -12,7 +12,7 @@ void test_nutrients(Network *n) {
   int energy[N_NUT], protein[N_NUT], fat[N_NUT], calcium[N_NUT];
   float iron[N_NUT];
   Neuron *neu;
-  int *rate, i;
+  int *rate, i, j, average_1 = 0, average_2 = 0;
 
   for (i=0; i<N_NUT; i++) {
     fgets(line, LINE_MAX, stdin);
@@ -50,8 +50,22 @@ void test_nutrients(Network *n) {
 
     rate = n->spiking_rate(true);
     neu = n->neurons(true);
-    printf("%d, %d\n", rate[11], rate[12]);
+    //printf("%d, %d\n", rate[11], rate[12]);
+
+    // Compute averages or rather prepare for computing them
+    average_1 += rate[11];
+    average_2 += rate[12];
   };
+
+  // Now, really compute the averages
+  average_1 /= N_NUT;
+  average_2 /= N_NUT;
+
+  printf("Average rates: %d, %d\n", average_1, average_2);
+
+  for (i=0; i<N_NUT; i++) {
+
+  }
 }
 
 int main() {
