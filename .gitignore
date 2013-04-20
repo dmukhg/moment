@@ -5,3 +5,7 @@ test/build/
 
 # Ignore generated files
 a.js
+
+# Ignore data files. They are about 137 Mb, man
+data/processed
+data/raw

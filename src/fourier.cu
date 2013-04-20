@@ -43,7 +43,8 @@ int test_fourier_transform(int count) {
   // Print data
   for (int i=0; i<count/2; i++) {
     tmp = host_signal[i].x * host_signal[i].x + host_signal[i].y * host_signal[i].y;
-    printf("[%d, %10f],\n", i, tmp);
+    printf("%10f\n", tmp);
+    //printf("[%d, %10f],\n", i, tmp);
   }
 
   return 0;
