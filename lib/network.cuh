@@ -24,7 +24,7 @@ class Network {
       n_neurons = num_neurons;
       n_connections = num_connections;
 
-      fired_res = 100;
+      fired_res = 1000;
 
       host_time = 0;
       host_neurons = new Neuron[n_neurons];
