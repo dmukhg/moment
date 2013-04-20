@@ -14,8 +14,9 @@ def close(i, indices):
   return False
 
 def measure_list(l):
-  indices = []
-  values  = []
+  indices  = []
+  values   = []
+  energies = []
 
   # Identify peaks
   while(len(indices) < NUM_PEAKS):
@@ -30,7 +31,35 @@ def measure_list(l):
     values.append(l_v)
 
   indices = sorted(indices)
-  print indices
+  values  = sorted(values)
+
+  # Create partitions and compute energy
+  for i in range(len(indices)):
+    try:
+      start = (indices[i-1] + indices[i]) / 2
+    except IndexError:
+      pass
+
+    try:
+      end = (indices[i+1] + indices[i]) / 2
+    except IndexError:
+      pass
+
+    if i == 0:
+      start = 0
+    elif i == len(indices) - 1:
+      end = len(l)
+
+    # Compute energies
+    for j in range(start, end):
+      try:
+        energies[i] += l[j]
+      except IndexError:
+        energies.append(l[j])
+
+  # Print out the frequency energy pairs to output
+  for i in range(len(energies)):
+    print "%4d, %12.3f" %(indices[i], energies[i])
 
 def measure_file(filename):
   f = open(filename, 'r')
@@ -42,6 +71,8 @@ def measure_file(filename):
 
 if __name__ == "__main__":
   try:
-    measure_file(sys.argv[1])
+    filename = sys.argv[1]
   except IndexError:
     print "You need to supply a file name to operate on."
+
+  measure_file(filename)
