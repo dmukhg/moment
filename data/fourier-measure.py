@@ -2,8 +2,8 @@
 
 import sys
 
-CLOSE_OFFSET = 30
-NUM_PEAKS    = 10
+CLOSE_OFFSET = 50
+NUM_PEAKS    = 2 
 
 def close(i, indices):
   # If is close by an offset of CLOSE_OFFSET to any of the indices, returns true
